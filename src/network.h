@@ -5,6 +5,7 @@
 #include "layer.h"
 #include <vector>
 #include <initializer_list>
+#include "utils.h"
 
 class Network
 {
@@ -15,5 +16,7 @@ private:
     // A dataset variable maybe?
 
 public:
-    Network(std::initializer_list<int> topology, int random_state, double learning_rate);
+    Network(std::initializer_list<int> topology, int random_state, double learning_rate, ActivationType h_act, ActivationType o_act);
+    void help_create_layer(int prev_nodes, int current_nodes, int random_state, double learning_rate, ActivationType activation, int i = 0);
+    Eigen::VectorXd forward_pass(Eigen::VectorXd &input);
 };

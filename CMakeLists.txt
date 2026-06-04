@@ -13,4 +13,4 @@ add_executable(nn_test
 
 # 4. Tell CMake where to find the Eigen headers
 # CMAKE_SOURCE_DIR is a variable pointing to the folder containing this CMakeLists.txt
-target_include_directories(nn_test PRIVATE ${CMAKE_SOURCE_DIR}/libs/eigen-5.0.0)
+target_include_directories(nn_test PRIVATE ${CMAKE_SOURCE_DIR}/libs/Eigen)
