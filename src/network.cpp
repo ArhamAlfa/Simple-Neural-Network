@@ -32,9 +32,9 @@ void Network::help_create_layer(int prev_nodes, int current_nodes, int random_st
 {
     // Add 'i' to the random state so each layer gets a unique seed
     // since if not the generator will generate the same 4-5 values for all the nodes
-    Layer new_layer(prev_nodes, current_nodes, random_state + i, activation);
+    Layer new_layer(prev_nodes, current_nodes, random_state + i, activation, learning_rate);
 
-    this->layers.push_back(new_layer);
+    layers.push_back(new_layer);
 
     // Print the matrix to verify the dimensions and random values
     std::cout << "--- Layer " << i << " Weights (" << current_nodes << "x" << prev_nodes << ") ---" << std::endl;
@@ -50,9 +50,9 @@ Eigen::VectorXd Network::forward_pass(Eigen::VectorXd &input)
     std::cout << "\n--- Resulting node outputs for each layer ---" << std::endl;
 
     // Forward passing logic for each layer
-    for (int i = 0; i < this->layers.size(); i++)
+    for (int i = 0; i < layers.size(); i++)
     {
-        // Printing 
+        // Printing
         std::cout << ">> Layer " << i + 1 << std::endl;
         std::cout << ">> Layer:" << std::endl;
         std::cout << layers[i].get_weights() << std::endl;
@@ -61,7 +61,7 @@ Eigen::VectorXd Network::forward_pass(Eigen::VectorXd &input)
         std::cout << output << std::endl;
 
         // Continually overwrite and pass output to the next layer
-        output = this->layers[i].forward(output);
+        output = layers[i].forward(output);
 
         // Print the vector for testing purposes
         std::cout << "\n\n>> Output \n[ " << output.transpose() << " ]\n\n--\n"
@@ -69,4 +69,37 @@ Eigen::VectorXd Network::forward_pass(Eigen::VectorXd &input)
     }
 
     return output;
+}
+
+void Network::backpropagate(Eigen::VectorXd &predicted, Eigen::VectorXd &actual)
+{
+    // Backpropagate for output layer
+    Eigen::VectorXd error;
+
+    error = 2 * (predicted - actual);
+
+    std::cout << "Starting Backpropagation Process on these actual outputs: \n[" << actual << "]" << std::endl;
+
+    std::cout << "\n>> Output layer-----" << std::endl;
+    error = layers[layers.size() - 1].back(error);
+
+    for (int i = layers.size() - 2; i >= 0; i--)
+    {
+        std::cout << "\n\n---\n"
+                  << std::endl;
+        std::cout << "\n>> Hidden layer " << i + 1 << "-----" << std::endl;
+        error = layers[i].back(error, layers[i + 1].get_weights());
+    }
+
+    console_print();
+}
+
+void Network::console_print()
+{
+    for (int i = 0; i < layers.size(); i++)
+    {
+        std::cout << "\n--- Layer " << i << " Weights (" << layers[i].get_weights().rows() << "x" << layers[i].get_weights().cols() << ") ---" << std::endl;
+        std::cout << layers[i].get_weights() << "\n"
+                  << std::endl;
+    }
 }
