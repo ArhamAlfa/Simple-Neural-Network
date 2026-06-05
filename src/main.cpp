@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
-#include <Eigen/Dense>
 #include "network.h"
+#include "dataset.h"
 
 int main()
 {
@@ -27,6 +27,17 @@ int main()
     // Attempt back pass
     Eigen::VectorXd actual{{0.0784, 0.2340, 0.05583}};
     new_network.backpropagate(predicted, actual);
+
+    std::cout << "\n\nLOADING XOR Problem DATASET --------------" << std::endl;
+
+    // // Initialize XOR data
+    // Dataset dataset = load_csv("XOR Problem", "../dataset/xor.csv", 2, 1);
+
+    // // Save XOR dataset
+    // save_dataset("../dataset/XOR_Data.bin", dataset);
+
+    // Load XOR data
+    Dataset dataset = get_dataset("XOR Problem", "../dataset/xor.csv", "../dataset/XOR_Data.bin", 2, 1);
 
     // Restore console buffer
     std::cout.rdbuf(cout_buffer);

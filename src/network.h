@@ -1,6 +1,5 @@
 #pragma once
 
-#include <Eigen/Dense>
 #include <iostream>
 #include "layer.h"
 #include <vector>
@@ -21,5 +20,6 @@ public:
     void help_create_layer(int prev_nodes, int current_nodes, int random_state, double learning_rate, ActivationType activation, int i = 0);
     Eigen::VectorXd forward_pass(Eigen::VectorXd &input);
     void backpropagate(Eigen::VectorXd &predicted, Eigen::VectorXd &actual);
+    double compute_loss(Eigen::VectorXd &predicted, Eigen::VectorXd &actual);
     void console_print();
 };

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <Eigen/Dense>
 #include "utils.h"
 
 class Layer

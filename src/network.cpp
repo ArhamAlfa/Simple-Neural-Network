@@ -4,6 +4,7 @@
 #include "network.h"
 #include <vector>
 #include <initializer_list>
+#include <cmath>
 
 Network::Network(std::initializer_list<int> topology, int random_state, double learning_rate, ActivationType h_act, ActivationType o_act)
 {
@@ -102,4 +103,13 @@ void Network::console_print()
         std::cout << layers[i].get_weights() << "\n"
                   << std::endl;
     }
+}
+
+double Network::compute_loss(Eigen::VectorXd &predicted, Eigen::VectorXd &actual)
+{
+    Eigen::VectorXd loss = (predicted - actual).array().square();
+
+    double sum = loss.array().sum();
+
+    return std::sqrt(sum/loss.size());
 }
