@@ -1,0 +1,19 @@
+{
+    "process_name": "Iris Flowers Classification",
+    "random_state": 52,
+    "learning_rate": 0.1,
+    "topology": [
+        4,
+        8,
+        5,
+        3
+    ],
+    "dataset_name": "Iris Classification",
+    "csv_path": "../dataset/raw/iris_preprocessed.csv",
+    "save_path": "../dataset/saved/IRIS_Data.bin",
+    "hidden_layer_activation": "SIGMOID",
+    "output_layer_activation": "SIGMOID",
+    "epochs": 5000,
+    "loss_threshold": 0.01,
+    "do_visualize": true
+}

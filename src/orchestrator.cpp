@@ -3,6 +3,8 @@
 #define RAYGUI_IMPLEMENTATION
 #include "../libs/raygui.h"
 
+#include "../libs/json.hpp"
+
 #include <iostream>
 #include <fstream>
 #include <thread>
@@ -12,12 +14,12 @@
 #include "dataset.h"
 #include "visualizer.h"
 
-float vw(float percentage)
+static float vw(float percentage)
 {
     return GetScreenWidth() * (percentage / 100.0f);
 }
 
-float vh(float percentage)
+static float vh(float percentage)
 {
     return GetScreenHeight() * (percentage / 100.0f);
 }
@@ -31,20 +33,34 @@ int main()
     // EVENTUAL IMPLEMENTATION OF NETWORK AND DATASET INITIALIZATION FROM
     // A PROVIDED JSON FILE WITH THE FIELDS BELOW:
 
+    std::ifstream config_file("config.json");
+    if (!config_file.is_open())
+    {
+        std::cerr << ">> Could not open config.json! Throwing error" << std::endl;
+        return 1;
+    }
+
+    // Parse config file from ifstream into nlohmann json object then closes it
+    nlohmann::json config = nlohmann::json::parse(config_file);
+    config_file.close();
+
     State state;
 
-    std::string process_name = "XOR Problem Neural Network";
-    int random_state = 52;
-    double learning_rate = 0.1;
-    std::initializer_list<int> topology = {2, 2, 1}; // Based on XOR Problem's 2, 2, 1
-    std::string dataset_name = "XOR Problem";
-    std::string csv_path = "../dataset/raw/xor.csv";
-    std::string save_path = "../dataset/saved/XOR_Data.bin";
-    std::string hidden_layer_activation = "RELU";
-    std::string output_layer_activation = "SIGMOID";
-    int epochs = 5000;
-    double loss_threshold = 0.1;
-    bool do_visualize = true;
+    // Pull values from JSON
+    std::string process_name = config["process_name"].get<std::string>();
+    int random_state = config["random_state"].get<int>();
+    double learning_rate = config["learning_rate"].get<double>();
+    std::vector<int> topology = config["topology"].get<std::vector<int>>(); // Based on XOR Problem's 2, 2, 1
+    std::string dataset_name = config["dataset_name"].get<std::string>();
+    std::string csv_path = config["csv_path"].get<std::string>();
+    std::string save_path = config["save_path"].get<std::string>();
+
+    std::string hidden_layer_activation = config["hidden_layer_activation"].get<std::string>();
+    std::string output_layer_activation = config["output_layer_activation"].get<std::string>();
+
+    int epochs = config["epochs"].get<int>();
+    double loss_threshold = config["loss_threshold"].get<double>();
+    bool do_visualize = config["do_visualize"].get<bool>();
 
     state.do_visualize = do_visualize;
 
@@ -64,8 +80,8 @@ int main()
         /*dataset_name= */ dataset_name,
         /*csv_path= */ csv_path,
         /*save_path= */ save_path,
-        /*input_size= */ *topology.begin(),
-        /*output_size= */ *topology.end());
+        /*input_size= */ topology[0],
+        /*output_size= */ topology[topology.size() - 1]);
 
     std::cout << "Initialized Dataset" << std::endl;
 
@@ -74,7 +90,7 @@ int main()
 
     std::cout << "Initialized Visualizer" << std::endl;
 
-    // // Fake values fr:
+    // Defaulting values for state
     state.tick_speed = 0.2f;
     state.is_backpropping = false;
 
@@ -82,6 +98,7 @@ int main()
     int playhead = 0;
     Snapshot current_snapshot;
 
+    // Creating sequence
     for (int i = 0; i < state.topology.size(); i++)
     {
         layer_sequence.push_back(i);
@@ -97,7 +114,7 @@ int main()
     float time_accumulator = 0.0;
 
     std::cout << "Starting Thread" << std::endl;
-    std::thread training_thread(&Network::train_model, &network, epochs, dataset, loss_threshold, std::ref(state), std::ref(state.queue_mutex));
+    std::thread training_thread(&Network::train_model, &network, epochs, std::ref(dataset), loss_threshold, std::ref(state), std::ref(state.queue_mutex));
     training_thread.detach();
 
     std::cout << "Thread Started" << std::endl;

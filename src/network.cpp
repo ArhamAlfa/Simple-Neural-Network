@@ -6,27 +6,24 @@
 #include <initializer_list>
 #include <cmath>
 
-Network::Network(std::initializer_list<int> topology, int random_state, double learning_rate, ActivationType h_act, ActivationType o_act, State &state) : state(state)
+Network::Network(std::vector<int> topology, int random_state, double learning_rate, ActivationType h_act, ActivationType o_act, State &state) : state(state)
 {
     this->random_state = random_state;
     this->learning_rate = learning_rate;
     state.topology = topology;
 
-    // Convert initializer_list to a vector
-    std::vector<int> top_vec(topology);
-
     // Start at index 1 as the input layer (index 0) doesn't own any weights.
-    for (size_t i = 1; i < top_vec.size() - 1; i++)
+    for (size_t i = 1; i < topology.size() - 1; i++)
     {
         // Grab current and previous node counts
-        int prev_nodes = top_vec[i - 1];
-        int current_nodes = top_vec[i];
+        int prev_nodes = topology[i - 1];
+        int current_nodes = topology[i];
 
         help_create_layer(prev_nodes, current_nodes, random_state, learning_rate, h_act, i);
     }
 
     // Final case for the output layer
-    help_create_layer(top_vec[top_vec.size() - 2], top_vec[top_vec.size() - 1], random_state, learning_rate, o_act, top_vec.size() - 1);
+    help_create_layer(topology[topology.size() - 2], topology[topology.size() - 1], random_state, learning_rate, o_act, topology.size() - 1);
 
     std::vector<Eigen::MatrixXd> weights;
 
@@ -128,7 +125,7 @@ double Network::compute_loss(Eigen::VectorXd &predicted, Eigen::VectorXd &actual
     return std::sqrt(sum / loss.size());
 }
 
-void Network::train_model(int epochs, Dataset dataset, double loss_threshold, State &state, std::mutex &queue_mutex)
+void Network::train_model(int epochs, Dataset &dataset, double loss_threshold, State &state, std::mutex &queue_mutex)
 {
     int count = 0;
     float computed_loss = 10000; // arbitrary large value
@@ -170,18 +167,41 @@ void Network::train_model(int epochs, Dataset dataset, double loss_threshold, St
     std::cout << "--- Training Finished! ---" << std::endl;
     std::cout << "\n\n\n"
               << std::endl;
+
+    test_model(dataset);
 }
 
-void Network::test_model(Dataset dataset)
+void Network::test_model(Dataset &dataset)
 {
     std::cout << "===== Testing Model on " << std::get<std::string>(dataset.metadata["dataset_name"]) << " =====" << std::endl;
 
-    for (int i = 0; i < dataset.labels.size(); i++)
+    int correct_count = 0;
+    int total_samples = dataset.labels.size();
+
+    for (int i = 0; i < total_samples; i++)
     {
-        std::cout << "-- Sample " << i << ":" << std::endl;
-        std::cout << "Prediction     |     Actual" << std::endl;
-        std::cout << forward_pass(dataset.inputs[i]).prediction.transpose() << "     |     " << dataset.labels[i].transpose() << std::endl;
-        std::cout << "\n"
-                  << std::endl;
+        int predicted_index;
+        int actual_index;
+
+        // MaxCoeff changes the referenced variables to the index of the max
+        // coefficient
+        forward_pass(dataset.inputs[i]).prediction.maxCoeff(&predicted_index);
+        dataset.labels[i].maxCoeff(&actual_index);
+
+        if (predicted_index == actual_index)
+        {
+            correct_count++;
+        }
     }
+
+    // Calculations
+    int missclassified = total_samples - correct_count;
+    double accuracy = (static_cast<double>(correct_count) / total_samples) * 100;
+
+    // Print
+    std::cout << "\n---- Model Evaluation Report -----" << std::endl;
+    std::cout << "Total Samples: " << total_samples << std::endl;
+    std::cout << "Correct Predictions: " << correct_count << std::endl;
+    std::cout << "Incorrect Predictions: " << missclassified << std::endl;
+    std::cout << "Overall Accuracy: " << accuracy << "%" << std::endl;
 }
