@@ -1,0 +1,1 @@
+/usr/bin/c++  -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/nn_test.dir/src/orchestrator.cpp.o CMakeFiles/nn_test.dir/src/network.cpp.o CMakeFiles/nn_test.dir/src/layer.cpp.o CMakeFiles/nn_test.dir/src/dataset.cpp.o -o nn_test  libs/raylib/raylib/libraylib.a -framework OpenGL -framework Cocoa -framework IOKit -framework CoreFoundation

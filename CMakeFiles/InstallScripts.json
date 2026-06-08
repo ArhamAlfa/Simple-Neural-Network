@@ -1,0 +1,11 @@
+{
+	"InstallScripts" : 
+	[
+		"/Users/aro/Github/Simple Neural Network/cmake_install.cmake",
+		"/Users/aro/Github/Simple Neural Network/libs/raylib/cmake_install.cmake",
+		"/Users/aro/Github/Simple Neural Network/libs/raylib/raylib/cmake_install.cmake",
+		"/Users/aro/Github/Simple Neural Network/libs/raylib/raylib/external/glfw/cmake_install.cmake",
+		"/Users/aro/Github/Simple Neural Network/libs/raylib/raylib/external/glfw/src/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

@@ -36,30 +36,30 @@ Eigen::VectorXd Layer::forward(Eigen::VectorXd &input_vector)
     Eigen::VectorXd z = (weights * input_vector) + bias;
     unactivated_z = z;
 
-    std::cout << "\n>> Pre-activated output: " << std::endl;
-    std::cout << z << std::endl;
+    // std::cout << "\n>> Pre-activated output: " << std::endl;
+    // std::cout << z << std::endl;
 
     return z.unaryExpr(ActivationFunction.apply);
 }
 
 Eigen::VectorXd Layer::back(Eigen::VectorXd error)
 {
-    std::cout << "\n> Received error = \n"
-              << error << std::endl;
+    // std::cout << "\n> Received error = \n"
+    //           << error << std::endl;
 
-    std::cout << "\n> Unactivated z = \n"
-              << unactivated_z << std::endl;
+    // std::cout << "\n> Unactivated z = \n"
+    //           << unactivated_z << std::endl;
 
     // Calculate
     error = error.cwiseProduct(unactivated_z.unaryExpr(ActivationFunction.derivative));
 
-    std::cout << "\n> New error = \n"
-              << error << std::endl;
+    // std::cout << "\n> New error = \n"
+    //           << error << std::endl;
 
     // Calculate Rate of Loss
     Eigen::MatrixXd rate_of_loss = error * previous_input.transpose();
-    std::cout << "\n> delta = \n"
-              << rate_of_loss << std::endl;
+    // std::cout << "\n> delta = \n"
+    //           << rate_of_loss << std::endl;
 
     // Adjust weights by Gradient Descent
     update_weights(rate_of_loss);
@@ -72,21 +72,21 @@ Eigen::VectorXd Layer::back(Eigen::VectorXd error)
 
 Eigen::VectorXd Layer::back(Eigen::VectorXd error, Eigen::MatrixXd next_weights)
 {
-    std::cout << "\n> Received error = \n"
-              << error << std::endl;
+    // std::cout << "\n> Received error = \n"
+    //           << error << std::endl;
 
-    std::cout << "\n> Unactivated z = \n"
-              << unactivated_z << std::endl;
+    // std::cout << "\n> Unactivated z = \n"
+    //           << unactivated_z << std::endl;
     // Calculate
     error = (next_weights.transpose() * error).cwiseProduct(unactivated_z.unaryExpr(ActivationFunction.derivative));
 
-    std::cout << "\n> New error = \n"
-              << error << std::endl;
+    // std::cout << "\n> New error = \n"
+    //           << error << std::endl;
 
     // Calculate Rate of Loss
     Eigen::MatrixXd rate_of_loss = error * previous_input.transpose();
-    std::cout << "\n> delta = \n"
-              << rate_of_loss << std::endl;
+    // std::cout << "\n> delta = \n"
+    //           << rate_of_loss << std::endl;
 
     // Adjust weights by Gradient Descent
     update_weights(rate_of_loss);

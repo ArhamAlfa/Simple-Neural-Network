@@ -14,19 +14,19 @@ int main()
               << std::endl;
 
     Network new_network = {
-        /*topology= */ {2, 3, 5, 3},
+        /*topology= */ {2, 2, 1},
         /*random_state= */ 52,
-        /*learning_rate= */ 0.01,
+        /*learning_rate= */ 0.1,
         /*h_act= */ ActivationType::RELU,
         /*o_act= */ ActivationType::SIGMOID};
 
-    // Attempt forward pass
-    Eigen::VectorXd input{{0.2367, 0.9234}};
-    Eigen::VectorXd predicted = new_network.forward_pass(input);
+    // // Attempt forward pass
+    // Eigen::VectorXd input{{0.2367, 0.9234}};
+    // Eigen::VectorXd predicted = new_network.forward_pass(input);
 
-    // Attempt back pass
-    Eigen::VectorXd actual{{0.0784, 0.2340, 0.05583}};
-    new_network.backpropagate(predicted, actual);
+    // // Attempt back pass
+    // Eigen::VectorXd actual{{0.0784, 0.2340, 0.05583}};
+    // new_network.backpropagate(predicted, actual);
 
     std::cout << "\n\nLOADING XOR Problem DATASET --------------" << std::endl;
 
@@ -38,6 +38,17 @@ int main()
 
     // Load XOR data
     Dataset dataset = get_dataset("XOR Problem", "../dataset/xor.csv", "../dataset/XOR_Data.bin", 2, 1);
+
+    // test model before training
+    std::cout << "TESTING MODEL BEFORE TRAINING" << std::endl;
+    new_network.test_model(dataset);
+
+    // train model
+    new_network.train_model(5000, dataset, 0.0001);
+
+    std::cout << "TESTING MODEL AFTER TRAINING" << std::endl;
+    // test model after training
+    new_network.test_model(dataset);
 
     // Restore console buffer
     std::cout.rdbuf(cout_buffer);
