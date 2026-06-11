@@ -23,9 +23,9 @@ add_executable(neural_network
 
 # Tell CMake where to find the Eigen headers
 # CMAKE_SOURCE_DIR is a variable pointing to the folder containing this CMakeLists.txt
-target_include_directories(visual_test PRIVATE ${CMAKE_SOURCE_DIR}/libs/Eigen)
+target_include_directories(neural_network PRIVATE ${CMAKE_SOURCE_DIR}/libs/Eigen)
 
 # Since raylib is a compiled library, we need to compile it first then link
 # the binary file to our project
 add_subdirectory(libs/raylib)
-target_link_libraries(visual_test PRIVATE raylib)
+target_link_libraries(neural_network PRIVATE raylib)
