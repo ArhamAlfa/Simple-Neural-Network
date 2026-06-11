@@ -55,7 +55,7 @@ cmake ..
 make
 ```
 
-This produces the `visual_test` executable inside the `build` directory.
+This produces the `neural_network` executable inside the `build` directory.
 
 ---
 
