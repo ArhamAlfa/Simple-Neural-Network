@@ -1,6 +1,6 @@
 {
     "process_name": "Iris Flowers Classification",
-    "random_state": 52,
+    "random_state": 67,
     "learning_rate": 0.1,
     "topology": [
         4,
@@ -14,6 +14,5 @@
     "hidden_layer_activation": "SIGMOID",
     "output_layer_activation": "SIGMOID",
     "epochs": 5000,
-    "loss_threshold": 0.01,
-    "do_visualize": true
+    "loss_threshold": 0.01
 }

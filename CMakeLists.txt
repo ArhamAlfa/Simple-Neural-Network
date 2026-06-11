@@ -5,11 +5,11 @@ cmake_minimum_required(VERSION 3.10)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Name your project
+# Name the project
 project(NeuralNetSandbox)
 
-# Tell CMake to create an executable file named 'visual_test' from 'main.cpp'
-add_executable(visual_test 
+# Tell CMake to create an executable file named 'neural_network'
+add_executable(neural_network
     src/orchestrator.cpp
     src/network.cpp
     src/layer.cpp

@@ -42,57 +42,38 @@ Eigen::VectorXd Layer::forward(Eigen::VectorXd &input_vector)
     return z.unaryExpr(ActivationFunction.apply);
 }
 
+// Case: Output layer
 Eigen::VectorXd Layer::back(Eigen::VectorXd error)
 {
-    // std::cout << "\n> Received error = \n"
-    //           << error << std::endl;
-
-    // std::cout << "\n> Unactivated z = \n"
-    //           << unactivated_z << std::endl;
-
     // Calculate
     error = error.cwiseProduct(unactivated_z.unaryExpr(ActivationFunction.derivative));
 
-    // std::cout << "\n> New error = \n"
-    //           << error << std::endl;
-
     // Calculate Rate of Loss
     Eigen::MatrixXd rate_of_loss = error * previous_input.transpose();
-    // std::cout << "\n> delta = \n"
-    //           << rate_of_loss << std::endl;
 
-    // Adjust weights by Gradient Descent
-    update_weights(rate_of_loss);
+    // Store weights for Gradient Descent
+    this->rate_of_loss = rate_of_loss;
 
-    // Adjust bias by error
-    update_bias(error);
+    // Store error for bias shift
+    this->error = error;
 
     return error;
 }
 
+// Case: Hidden layer
 Eigen::VectorXd Layer::back(Eigen::VectorXd error, Eigen::MatrixXd next_weights)
 {
-    // std::cout << "\n> Received error = \n"
-    //           << error << std::endl;
-
-    // std::cout << "\n> Unactivated z = \n"
-    //           << unactivated_z << std::endl;
     // Calculate
     error = (next_weights.transpose() * error).cwiseProduct(unactivated_z.unaryExpr(ActivationFunction.derivative));
 
-    // std::cout << "\n> New error = \n"
-    //           << error << std::endl;
-
     // Calculate Rate of Loss
     Eigen::MatrixXd rate_of_loss = error * previous_input.transpose();
-    // std::cout << "\n> delta = \n"
-    //           << rate_of_loss << std::endl;
 
-    // Adjust weights by Gradient Descent
-    update_weights(rate_of_loss);
+    // Store weights for Gradient Descent
+    this->rate_of_loss = rate_of_loss;
 
-    // Adjust bias by error
-    update_bias(error);
+    // Store error for bias shift
+    this->error = error;
 
     return error;
 }
@@ -107,4 +88,10 @@ void Layer::update_bias(Eigen::VectorXd error)
 {
     Eigen::VectorXd new_bias = bias - (learning_rate * error);
     bias = new_bias;
+}
+
+void Layer::apply_gradient_descent()
+{
+    update_weights(rate_of_loss);
+    update_bias(error);
 }

@@ -53,7 +53,7 @@ void Network::help_create_layer(int prev_nodes, int current_nodes, int random_st
 
 forward_package Network::forward_pass(Eigen::VectorXd &input)
 {
-    // std::cout << "\n--- Feedforwarding the following vector ---" << std::endl;
+    // std::cout << "\n--- Feedforwarding ---" << std::endl;
     Eigen::VectorXd output = input;
     std::vector<Eigen::MatrixXd> weights;
     // std::cout << "[ " << output << " ]" << std::endl;
@@ -62,20 +62,22 @@ forward_package Network::forward_pass(Eigen::VectorXd &input)
     // Forward passing logic for each layer
     for (int i = 0; i < layers.size(); i++)
     {
-        // Printing
-        // std::cout << ">> Layer " << i + 1 << std::endl;
-        // std::cout << ">> Layer:" << std::endl;
-        // std::cout << layers[i].get_weights() << std::endl;
+        //     // Printing
+        //     std::cout << ">> Layer " << i + 1 << std::endl;
+        //     std::cout << ">> Layer:" << std::endl;
+        //     std::cout << layers[i].get_weights() << std::endl;
 
-        // std::cout << "\n>> Input: " << std::endl;
-        // std::cout << output << std::endl;
+        //     std::cout << "\n>> Input: " << std::endl;
+        //     std::cout << output << std::endl;
 
         // Continually overwrite and pass output to the next layer
         weights.push_back(layers[i].get_weights());
         output = layers[i].forward(output);
 
-        // Print the vector for testing purposes
-        // std::cout << "\n\n>> Output \n[ " << output.transpose() << " ]\n\n--\n"
+        // // Print the vector for testing purposes
+        // std::cout << "\n\n>> Output \n[ " << output.transpose() << " ]"
+        //           << std::endl;
+        // std::cout << "-----------------------------------------------\n\n\n"
         //           << std::endl;
     }
 
@@ -84,26 +86,26 @@ forward_package Network::forward_pass(Eigen::VectorXd &input)
 
 void Network::backpropagate(Eigen::VectorXd &predicted, Eigen::VectorXd &actual)
 {
-    // Backpropagate for output layer
     Eigen::VectorXd error;
-
+    
     // Derivative of squared error
     error = 2 * (predicted - actual);
-
-    // std::cout << "Starting Backpropagation Process on these actual outputs: \n[" << actual << "]" << std::endl;
-
-    // std::cout << "\n>> Output layer-----" << std::endl;
+    
+    
+    // Backpropagate for output layer
     error = layers[layers.size() - 1].back(error);
 
+    // Backpropagate for the rest of the layers
     for (int i = layers.size() - 2; i >= 0; i--)
     {
-        // std::cout << "\n\n---\n"
-        //           << std::endl;
-        // std::cout << "\n>> Hidden layer " << i + 1 << "-----" << std::endl;
         error = layers[i].back(error, layers[i + 1].get_weights());
     }
 
-    // console_print();
+    // Update bias and weights through stored gradient descent values:
+    for (int i = 0; i < layers.size(); i++)
+    {
+        layers[i].apply_gradient_descent();
+    }
 }
 
 void Network::console_print()

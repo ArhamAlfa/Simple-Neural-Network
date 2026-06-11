@@ -60,9 +60,8 @@ int main()
 
     int epochs = config["epochs"].get<int>();
     double loss_threshold = config["loss_threshold"].get<double>();
-    bool do_visualize = config["do_visualize"].get<bool>();
 
-    state.do_visualize = do_visualize;
+    state.do_visualize = true;
 
     // Initialize Network
     Network network = {
@@ -110,15 +109,19 @@ int main()
     }
 
     state.active_layer_index = layer_sequence[playhead];
+    state.previous_layer_index = -1;
 
     float time_accumulator = 0.0;
 
+    // Create a new thread for the neural network
     std::cout << "Starting Thread" << std::endl;
     std::thread training_thread(&Network::train_model, &network, epochs, std::ref(dataset), loss_threshold, std::ref(state), std::ref(state.queue_mutex));
     training_thread.detach();
 
     std::cout << "Thread Started" << std::endl;
 
+
+    // Run visualizer loop
     if (state.do_visualize)
     {
         std::cout << "Visualizing Network" << std::endl;

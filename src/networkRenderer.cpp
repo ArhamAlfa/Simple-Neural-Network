@@ -59,8 +59,6 @@ void highlight_layer(int layer_index, NetworkRegion &network, std::vector<std::v
 
 void render_network(Rectangle view_region, std::string box_title, State &state)
 {
-    // std::cout << "YOOOOOO" << std::endl;
-
     GuiGroupBox(view_region, box_title.c_str());
 
     if (state.active_layer_index == state.previous_layer_index)

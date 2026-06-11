@@ -1,34 +1,15 @@
 #include "controlsRenderer.h"
 #include "../libs/raygui.h"
-#include <cmath>
-#include <algorithm>
+
 
 static float slider;
-
-struct ControlsRegion
-{
-    float x;
-    float y;
-    float width;
-    float height;
-};
 
 static float vw(Rectangle region, float percentage)
 {
     return region.width * (percentage / 100.0f);
 }
 
-static float vw(ControlsRegion region, float percentage)
-{
-    return region.width * (percentage / 100.0f);
-}
-
 static float vh(Rectangle region, float percentage)
-{
-    return region.height * (percentage / 100.0f);
-}
-
-static float vh(ControlsRegion region, float percentage)
 {
     return region.height * (percentage / 100.0f);
 }

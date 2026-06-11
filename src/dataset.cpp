@@ -4,6 +4,19 @@
 #include <vector>
 #include "dataset.h"
 
+static void print_dataset(Dataset &dataset)
+{
+    std::cout << "\n\n-- PRINTING DATASET ---------" << std::endl;
+    std::cout << "-- Dataset: " << std::get<std::string>(dataset.metadata["dataset_name"]) << std::endl;
+    std::cout << "-- Path: " << std::get<std::string>(dataset.metadata["path"]) << std::endl;
+    std::cout << std::get<std::string>(dataset.metadata["columns"]) << std::endl;
+
+    for (int i = 0; i < dataset.inputs.size(); i++)
+    {
+        std::cout << dataset.inputs[i].transpose() << " " << dataset.labels[i].transpose() << std::endl;
+    }
+}
+
 Dataset load_csv(std::string dataset_name, std::string path, int input_size, int label_size)
 {
     std::cout << "Running load_csv()" << std::endl;
@@ -66,7 +79,7 @@ Dataset load_csv(std::string dataset_name, std::string path, int input_size, int
 
 static void save_vector(std::ofstream &file, Eigen::VectorXd &vector)
 {
-    std::cout << "Running save_vector()" << std::endl;
+    // std::cout << "Running save_vector()" << std::endl;
     int size = vector.size();
 
     // Write the size of the vector itself
@@ -78,7 +91,7 @@ static void save_vector(std::ofstream &file, Eigen::VectorXd &vector)
 
 static Eigen::VectorXd load_vector(std::ifstream &file)
 {
-    std::cout << "Running load_vector()" << std::endl;
+    // std::cout << "Running load_vector()" << std::endl;
     int size;
 
     // Read and store size of vector into size
@@ -95,7 +108,7 @@ static Eigen::VectorXd load_vector(std::ifstream &file)
 
 static void write_string(std::ofstream &file, std::string string)
 {
-    std::cout << "Running write_string()" << std::endl;
+    // std::cout << "Running write_string()" << std::endl;
     int size = string.size();
 
     // Write the size of the string
@@ -110,7 +123,7 @@ static void write_string(std::ofstream &file, std::string string)
 
 static std::string read_string(std::ifstream &file)
 {
-    std::cout << "Running read_string()" << std::endl;
+    // std::cout << "Running read_string()" << std::endl;
     int size;
 
     file.read((char *)&size, sizeof(int));
@@ -124,7 +137,7 @@ static std::string read_string(std::ifstream &file)
 
 static void save_metadata(std::ofstream &file, Dataset &dataset)
 {
-    std::cout << "Running save_metadata()" << std::endl;
+    // std::cout << "Running save_metadata()" << std::endl;
     // unpack the metadata map into [key, value] pairs similar to what you can do in Python
     for (auto &[key, value] : dataset.metadata)
     {
@@ -164,9 +177,10 @@ static void save_metadata(std::ofstream &file, Dataset &dataset)
         }
     }
 }
+
 static void load_metadata(std::ifstream &file, Dataset &dataset, int metadata_size)
 {
-    std::cout << "Running load_metadata()" << std::endl;
+    // std::cout << "Running load_metadata()" << std::endl;
     for (int i = 0; i < metadata_size; i++)
     {
         std::string key = read_string(file);
@@ -280,17 +294,4 @@ Dataset get_dataset(std::string dataset_name, std::string csv_path, std::string 
 
     print_dataset(dataset);
     return dataset;
-}
-
-void print_dataset(Dataset &dataset)
-{
-    std::cout << "\n\n-- PRINTING DATASET ---------" << std::endl;
-    std::cout << "-- Dataset: " << std::get<std::string>(dataset.metadata["dataset_name"]) << std::endl;
-    std::cout << "-- Path: " << std::get<std::string>(dataset.metadata["path"]) << std::endl;
-    std::cout << std::get<std::string>(dataset.metadata["columns"]) << std::endl;
-
-    for (int i = 0; i < dataset.inputs.size(); i++)
-    {
-        std::cout << dataset.inputs[i].transpose() << " " << dataset.labels[i].transpose() << std::endl;
-    }
 }
