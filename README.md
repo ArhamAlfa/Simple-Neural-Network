@@ -128,7 +128,7 @@ Example `config.json`:
 ### Running
 
 ```bash
-./visual_test
+./neural_network
 ```
 
 [SCREENSHOT OF TERMINAL OUTPUT DURING TRAINING]
