@@ -37,7 +37,7 @@ All dependencies are included as git submodules and do not require separate inst
 Clone the repository along with all submodules recursively:
 
 ```bash
-git clone --recurse-submodules https://github.com/yourusername/simple_neural_network.git
+git clone --recurse-submodules https://github.com/ArhamAlfa/simple_neural_network.git
 cd simple_neural_network
 ```
 
